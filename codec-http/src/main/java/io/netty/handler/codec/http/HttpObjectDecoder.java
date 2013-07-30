@@ -102,6 +102,7 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
     private final int maxHeaderSize;
     private final int maxChunkSize;
     private final boolean chunkedSupported;
+    private final StringBuilder sb = new StringBuilder(64);
     private ByteBuf content;
     private HttpMessage message;
     private long chunkSize;
@@ -645,7 +646,7 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
     }
 
     private String readHeader(ByteBuf buffer) {
-        StringBuilder sb = new StringBuilder(64);
+        sb.setLength(0);
         int headerSize = this.headerSize;
 
         loop:
@@ -700,8 +701,8 @@ public abstract class HttpObjectDecoder extends ReplayingDecoder<HttpObjectDecod
         return Integer.parseInt(hex, 16);
     }
 
-    private static String readLine(ByteBuf buffer, int maxLineLength) {
-        StringBuilder sb = new StringBuilder(64);
+    private String readLine(ByteBuf buffer, int maxLineLength) {
+        sb.setLength(0);
         int lineLength = 0;
         while (true) {
             byte nextByte = buffer.readByte();
